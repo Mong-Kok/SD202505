@@ -1,0 +1,33 @@
+<!DOCTYPE html><head><meta charset="UTF-8"><title>xR Space Colony(Island Three)</title>
+<script src="https://aframe.io/releases/1.7.0/aframe.min.js"></script>
+<style>#container {width:100%;height:100%;z-index:1;position:relative;margin:0;}
+       #cameraNavi {width:100%;height:100%;z-index:2;top:0;left:0;position:absolute;mix-blend-mode:overlay;}
+</style></head><body><div id="container">
+  <a-scene background="color:#000" fog="type: linear; color: #888; near: 10; far: 10000">
+    <a-entity camera="fov:55" position="0 -320 0" look-controls wasd-controls></a-entity>
+    <a-light type="ambient" color="#DDD"></a-light>
+    <a-cylinder radius="325" height="3000" open-ended="true" position="0 0 0" rotation="90 0 0"
+      material="src:texture_colony_back.png; transparent:true; side:back"></a-cylinder>
+    <a-cylinder radius="325" height="3000" open-ended="true" position="0 0 0" rotation="90 0 0"
+      material="src:texture_colony_front.png; transparent:true; side:front"></a-cylinder>
+    <a-circle src="edge.png" radius="325" position="0 0 -1500" rotation="0 0 0" side="double"></a-circle>
+    <a-circle src="edge.png" radius="325" position="0 0 1500" rotation="0 0 0" side="double"></a-circle>
+    <a-assets><img id="mirrorTexture" src="mirror.png"></a-assets>
+    <a-assets><img id="mirrorTexture" src="mirror.png"></a-assets>
+    <a-assets><img id="mirrorTexture" src="mirror.png"></a-assets>
+    <a-sky rotation="90 0 0" radius="3100" src="stellarium-001.png"
+      animation="property: phi-start; to: 360; loop: true; dur: 113000; easing: linear" ></a-sky>
+  </a-scene>
+  <div id="cameraNavi"><video id="videoInput" autoplay playsinline></video></div>
+</div>
+<script>let video = document.getElementById("videoInput");navigator.mediaDevices.getUserMedia(
+    {video:{facingMode:"environment"},audio:false}).then(function(stream){video.srcObject=stream;
+    video.play();}).catch(function(err){});</script>
+<script>if (window.DeviceOrientationEvent) {window.addEventListener("deviceorientation",
+  function(event) {let beta = event.beta;if (beta !== null) {
+    beta=Math.abs(beta) // 下向き(90〜-90)ではカメラ重視、それ以外ではA-Frame重視 
+    opacity=Math.max(Math.min(1.0,beta/180-0.1),0) // 角度を 0~1 に正規化
+    document.getElementById("videoInput").style.opacity = 1-opacity;
+    document.getElementById("container").style.brightness = opacity;}},true);
+    } else {alert("デバイスの向きセンサーがサポートされていません。");}</script>
+</body></html>
